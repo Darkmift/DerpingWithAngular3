@@ -56,6 +56,7 @@ export class HomeComponent implements OnInit {
   removeItem(i) {
     this.goals.splice(i, 1);
     localStorage.setItem("lifeGoals", JSON.stringify(this.goals));
+    this.itemCount = this.goals.length;
   }
 
 }
