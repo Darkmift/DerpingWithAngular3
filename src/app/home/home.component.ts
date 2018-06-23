@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { trigger, style, transition, animate, keyframes, query, stagger, state } from "@angular/animations";
-
+import { DataService } from "../data.service";
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -32,18 +32,23 @@ export class HomeComponent implements OnInit {
   itemCount;
   btnText: string = 'Add an item';
   goalText: string = 'My first life goal';
-  goals: string[] = localStorage.getItem('lifeGoals') ? JSON.parse(localStorage.getItem('lifeGoals')) : [];
+  // goals: string[] = localStorage.getItem('lifeGoals') ? JSON.parse(localStorage.getItem('lifeGoals')) : [];
+  goals = [];
+
   errorText: string = '';
-  constructor() { }
+  constructor(private _data: DataService) { }
 
   ngOnInit() {
+    this._data.goal.subscribe(res => this.goals = res);
     this.itemCount = this.goals.length;
+    this._data.changeGoal(this.goals);
   }
 
   addItem() {
     if (this.goalText.length > 1) {
       this.goals.push(this.goalText);
-      localStorage.setItem("lifeGoals", JSON.stringify(this.goals));
+      // localStorage.setItem("lifeGoals", JSON.stringify(this.goals));
+      this._data.changeGoal(this.goals);
       this.errorText = '';
     } else {
       this.errorText = `input empty!!`;
@@ -55,7 +60,8 @@ export class HomeComponent implements OnInit {
 
   removeItem(i) {
     this.goals.splice(i, 1);
-    localStorage.setItem("lifeGoals", JSON.stringify(this.goals));
+    this._data.changeGoal(this.goals);
+    // localStorage.setItem("lifeGoals", JSON.stringify(this.goals));
     this.itemCount = this.goals.length;
   }
 
